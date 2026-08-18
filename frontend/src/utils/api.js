@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getAccessToken, saveAuth, getUser, clearAuth } from './auth';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5050/api',
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true
 });
 
@@ -31,7 +31,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Only refresh when access token has expired
     if (
       error.response?.status === 401 &&
       !originalRequest._retry
@@ -40,7 +39,7 @@ api.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          'http://localhost:5050/api/auth/refresh',
+          `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
           {},
           {
             withCredentials: true
@@ -49,20 +48,16 @@ api.interceptors.response.use(
 
         const newAccessToken = response.data.accessToken;
 
-        // Save the new access token
         saveAuth(newAccessToken, getUser());
 
-        // Put the new token on the failed request
         originalRequest.headers.Authorization =
           `Bearer ${newAccessToken}`;
 
-        // Try the original request again
         return api(originalRequest);
 
       } catch (refreshError) {
         console.error('Session refresh failed:', refreshError);
 
-        // Refresh token is also invalid/expired
         clearAuth();
 
         window.location.href = '/auth/login';
