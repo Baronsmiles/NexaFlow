@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import OrderHistory from '../pages/OrderHistory/OrderHistory';
 import Auth from '../pages/Auth/Auth';
-import Dashboard from '../pages/Dashboard/Dashboard';
-import PaymentCallback from '../pages/Payment/PaymentCallback';
-import NotFound from '../pages/NotFound/NotFound';
+import Dashboard from "../pages/Dashboard/dashboard";
+import PaymentCallback from "../pages/payment/PaymentCallback";
+import NotFound from "../pages/Notfound/notfound";
 
 function AppRoutes() {
   return (
