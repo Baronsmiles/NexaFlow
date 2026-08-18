@@ -21,7 +21,7 @@ import {
   clearResetEmail
 } from '../../utils/authFlow';
 
-import './Auth.css';
+import './auth.css';
 import { saveAuth } from '../../utils/auth';
 
 
