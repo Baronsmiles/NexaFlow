@@ -23,7 +23,8 @@ export async function logout(req, res) {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
+      secure: true,
+      sameSite: 'none',
     });
 
     return res.status(200).json({

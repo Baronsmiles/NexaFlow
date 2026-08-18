@@ -109,9 +109,10 @@ export async function refreshToken(req, res) {
     // Send new refresh token
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/'
     });
 
     return res.status(200).json({
@@ -120,7 +121,7 @@ export async function refreshToken(req, res) {
     });
 
   } catch (error) {
-    console.error('Refresh token error:', error);
+    console.error('something with wrong:', error);
 
     return res.status(500).json({
       success: false,

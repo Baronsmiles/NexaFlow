@@ -41,17 +41,17 @@ export async function register(req, res) {
     const refreshTokenHash = hashRefreshToken(refreshToken);
 
 
-    const expiresAt = new Date( Date.now() + 7 * 24 * 60 * 60 * 1000 );
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     await prisma.refreshTokenSession.create({ data: { userId: user.id, tokenHash: refreshTokenHash, expiresAt } });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days, in milliseconds
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/'
     });
-
     res.status(201).json({
       success: true,
       message: 'Account created successfully.',
