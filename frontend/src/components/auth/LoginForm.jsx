@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import Button from '../ui/Button';
+import Button from '../ui/button';
 import Input from '../ui/Input';
-import Alert from '../ui/Alert';
+import Alert from '../ui/alert';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 import api from '../../utils/api';

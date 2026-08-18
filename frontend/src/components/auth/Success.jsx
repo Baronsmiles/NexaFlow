@@ -1,4 +1,4 @@
-import Button from '../ui/Button';
+import Button from '../ui/button';
 import './Success.css';
 
 function Success({ title = 'Success', message, buttonText = 'Continue', onContinue }) {

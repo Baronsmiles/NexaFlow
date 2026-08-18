@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import Button from '../ui/Button';
-import Alert from '../ui/Alert';
+import Button from '../ui/button';
+import Alert from '../ui/alert';
 import api from '../../utils/api';
 import './OtpInput.css';
 

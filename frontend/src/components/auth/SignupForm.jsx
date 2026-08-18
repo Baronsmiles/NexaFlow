@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import Button from '../ui/Button';
+import Button from '../ui/button';
 import Input from '../ui/Input';
-import Alert from '../ui/Alert';
+import Alert from '../ui/alert';
 import { validatePassword } from '../../utils/validatePassword';
 import { useNavigate } from 'react-router-dom';
 import './SignupForm.css';

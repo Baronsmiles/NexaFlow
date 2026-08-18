@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Button from '../ui/Button';
+import Button from '../ui/button';
 import Input from '../ui/Input';
-import Alert from '../ui/Alert';
+import Alert from '../ui/alert';
 import api from '../../utils/api';
 import './ForgotPassword.css';
 
