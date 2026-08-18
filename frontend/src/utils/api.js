@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { getAccessToken, saveAuth, getUser, clearAuth } from './auth';
+import {
+  getAccessToken,
+  saveAuth,
+  getUser,
+  clearAuth
+} from './auth';
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api`,
@@ -31,9 +36,19 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const requestUrl = originalRequest?.url || '';
+
+    // Do not refresh for authentication endpoints
+    const isAuthRequest =
+      requestUrl.includes('/auth/login') ||
+      requestUrl.includes('/auth/register') ||
+      requestUrl.includes('/auth/google') ||
+      requestUrl.includes('/auth/refresh');
+
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest?._retry &&
+      !isAuthRequest
     ) {
       originalRequest._retry = true;
 
