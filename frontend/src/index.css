@@ -1,0 +1,57 @@
+
+:root {
+--bg-main: #F4F8F5;
+--text-primary: #0F1F17;
+--text-muted: #5B6E63;
+
+--input-bg: #FFFFFF;
+--input-border: #D1DCD6;
+--input-focus: #10B981;
+--input-error: #E11D48;
+
+--btn-primary: #10B981;
+--btn-primary-hover: #059669;
+
+--sso-bg: #EBF2EE;
+--sso-border: #D8E3DD;
+
+--tab-active: #0F1F17;
+--card-bg: #FFFFFF;
+
+--font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: var(--font-family);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}

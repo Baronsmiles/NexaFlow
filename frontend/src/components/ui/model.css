@@ -1,0 +1,74 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(15, 31, 23, 0.45);
+  z-index: 1000;
+}
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(15, 31, 23, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--sso-border);
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: var(--sso-bg);
+  color: var(--text-primary);
+}
+
+.modal-content {
+  padding: 24px;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    max-width: 100%;
+  }
+
+  .modal-header {
+    padding: 18px 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+}

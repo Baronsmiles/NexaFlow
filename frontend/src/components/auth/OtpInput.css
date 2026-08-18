@@ -1,0 +1,133 @@
+.otp-flow form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.otp-flow .btn {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.otp-header {
+  width: 100%;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 16px;
+  background: var(--sso-bg);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: var(--sso-border);
+}
+
+.flow-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.flow-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.otp-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.otp-input {
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.otp-email {
+  margin-bottom: 30px;
+}
+
+.otp-input:focus {
+  border-color: var(--input-focus);
+}
+
+.otp-container.error .otp-input {
+  border-color: var(--input-error);
+}
+
+.error-text {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--input-error);
+  
+}
+
+.resend-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.resend-link {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.resend-link:hover {
+  color: var(--btn-primary);
+}
+
+.resend-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 480px) {
+  .otp-container {
+    gap: 6px;
+  }
+
+  .otp-input {
+    width: 44px;
+    height: 44px;
+  }
+}

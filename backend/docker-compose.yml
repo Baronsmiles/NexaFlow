@@ -1,0 +1,57 @@
+services:
+
+  api:
+    build: .
+    container_name: nexaflow-api
+    restart: unless-stopped
+
+    env_file:
+      - .env
+    ports:
+      - "5050:5000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - nexaflow-network
+
+
+  postgres:
+    image: postgres:17
+
+    container_name: nexaflow-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: nexaflow
+      POSTGRES_PASSWORD: nexaflow_password
+      POSTGRES_DB: nexaflow
+    ports:
+    - "5433:5432"
+
+    volumes:
+      - nexaflow_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexaflow -d nexaflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - nexaflow-network
+
+
+volumes:
+
+  nexaflow_postgres_data:
+
+
+networks:
+
+  nexaflow-network:
