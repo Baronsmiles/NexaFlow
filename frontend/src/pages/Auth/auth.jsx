@@ -7,7 +7,7 @@ import OtpInput from '../../components/auth/OtpInput';
 import ResetPassword from '../../components/auth/ResetPassword';
 import Success from '../../components/auth/Success';
 import GoogleButton from '../../components/auth/GoogleButton';
-import Alert from '../../components/ui/Alert';
+import Alert from '../../components/ui/alert';
 import api from '../../utils/api';
 import {
   setAuthFlow,

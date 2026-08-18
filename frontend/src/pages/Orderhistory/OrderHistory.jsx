@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../../utils/api';
 import Navbar from '../../components/ui/Navbar';
 import Modal from '../../components/ui/model';
-import Alert from '../../components/ui/Alert';
+import Alert from '../../components/ui/alert';
 import './OrderHistory.css';
 
 function OrderHistory() {

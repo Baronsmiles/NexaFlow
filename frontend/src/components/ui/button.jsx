@@ -1,5 +1,5 @@
-import './Button.css';
-import Loader from './Loader';
+import './button.css';
+import Loader from './loader';
 
 function Button({ children, type = 'button', variant = 'primary', onClick, disabled, loading }) {
   return (

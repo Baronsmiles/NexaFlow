@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../../components/ui/Navbar';
 import Input from '../../components/ui/Input';
-import Button from '../../components/ui/Button';
-import Alert from '../../components/ui/Alert';
-import './Dashboard.css';
+import Button from '../../components/ui/button';
+import Alert from '../../components/ui/alert';
+import './dashboard.css';
 import api from '../../utils/api';
 
 const DRAFT_KEY = 'nexaflow_dashboard_draft';

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../utils/api';
-import Button from '../../components/ui/Button';
-import Loader from '../../components/ui/Loader';
+import Button from '../../components/ui/button';
+import Loader from '../../components/ui/loader';
 import './PaymentCallback.css';
 
 function PaymentCallback() {

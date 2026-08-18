@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './Input.css';
+import './input.css';
 
 function Input({
   label,

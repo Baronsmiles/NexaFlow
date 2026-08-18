@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import OrderHistory from '../pages/OrderHistory/OrderHistory';
-import Auth from '../pages/Auth/Auth';
+import OrderHistory from "../pages/Orderhistory/OrderHistory";
+import Auth from "../pages/Auth/auth";
 import Dashboard from "../pages/Dashboard/dashboard";
 import PaymentCallback from "../pages/payment/PaymentCallback";
 import NotFound from "../pages/Notfound/notfound";
