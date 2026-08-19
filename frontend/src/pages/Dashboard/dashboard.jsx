@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import Navbar from '../../components/ui/Navbar';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/button';
@@ -13,14 +14,20 @@ function loadDraft() {
   const saved = localStorage.getItem(DRAFT_KEY);
   if (!saved) return null;
 
-  const parsed = JSON.parse(saved);
-  const isExpired = Date.now() - parsed.savedAt > DRAFT_MAX_AGE_MS;
+  try {
+    const parsed = JSON.parse(saved);
+    const isExpired = Date.now() - parsed.savedAt > DRAFT_MAX_AGE_MS;
 
-  if (isExpired) {
+    if (isExpired) {
+      localStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+    return parsed;
+  } catch (error) {
+    console.error('Failed to load dashboard draft:', error);
     localStorage.removeItem(DRAFT_KEY);
     return null;
   }
-  return parsed;
 }
 
 function Dashboard() {
@@ -29,20 +36,42 @@ function Dashboard() {
     return {
       productName: draft?.productName || '',
       price: draft?.price || '',
-      image: draft?.image || null,
+      image: draft?.image || null
     };
   });
 
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Save a draft on every change (image included, since it's already a string)
   useEffect(() => {
     const draftToSave = { ...productData, savedAt: Date.now() };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draftToSave));
   }, [productData]);
+
+  const paymentMutation = useMutation({
+    mutationFn: async (product) => {
+      const response = await api.post('/payments/initialize', product, {
+        withCredentials: true,
+      });
+      return response.data;
+    },
+
+    onSuccess: (data) => {
+      localStorage.removeItem(DRAFT_KEY);
+      setProductData({ productName: '', price: '', image: null });
+      setSuccessMessage('Payment initialized! Redirecting to Paystack...');
+
+      setTimeout(() => {
+        window.location.href = data.authorizationUrl;
+      }, 1500);
+    },
+
+    onError: (error) => {
+      console.error('Payment error:', error);
+      setFormError(error.response?.data?.message || 'Something went wrong while starting payment.');
+    }
+  });
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -90,53 +119,19 @@ function Dashboard() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit(event) {
-  event.preventDefault();
+  function handleSubmit(event) {
+    event.preventDefault();
+    setFormError('');
+    setSuccessMessage('');
 
-  setFormError('');
+    if (!validateForm()) return;
 
-  if (!validateForm()) return;
-
-  setIsSubmitting(true);
-
-  try {
-    const paymentResponse = await api.post(
-      '/payments/initialize',
-      {
-        productName: productData.productName,
-        price: productData.price,
-        image: productData.image
-      },
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
-    );
-
-    localStorage.removeItem(DRAFT_KEY);
-    setProductData({ productName: '', price: '', image: null });
-
-    // Show success message briefly before redirect
-    setSuccessMessage('Payment initialized! Redirecting to Paystack...');
-    
-    // Wait 1.5 seconds to show the success state, then redirect
-    setTimeout(() => {
-      window.location.href = paymentResponse.data.authorizationUrl;
-    }, 1500);     
-
-  } catch (error) {
-    console.error('Payment error:', error);
-
-    setFormError(
-      error.response?.data?.message ||
-      'Something went wrong while starting payment.'
-    );
-  } finally {
-    setIsSubmitting(false);
+    paymentMutation.mutate({
+      productName: productData.productName,
+      price: productData.price,
+      image: productData.image
+    });
   }
-}
 
   return (
     <div className="dashboard-wrapper">
@@ -153,9 +148,7 @@ function Dashboard() {
             <Alert type="error" message={formError} dismissible onClose={() => setFormError('')} />
           )}
 
-          {successMessage && (
-            <Alert type="success" message={successMessage} />
-          )}
+          {successMessage && <Alert type="success" message={successMessage} />}
 
           <div className="dashboard-section">
             <h2>Product Details</h2>
@@ -207,7 +200,7 @@ function Dashboard() {
               required
             />
 
-            <Button type="submit" loading={isSubmitting}>
+            <Button type="submit" loading={paymentMutation.isPending}>
               Place Order
             </Button>
           </form>

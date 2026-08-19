@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { isAuthenticated, getUser, clearAuth } from '../../utils/auth';
+import api from '../../utils/api';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -21,10 +24,17 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  function handleSignOut() {
-    clearAuth();
-    setMenuOpen(false);
-    navigate('/auth/login');
+  async function handleSignOut() {
+    try {
+      await api.post('/auth/logout', {}, { withCredentials: true });
+    } catch (error) {
+      console.error('Logout request failed:', error);
+    } finally {
+      clearAuth();
+      queryClient.clear();
+      setMenuOpen(false);
+      navigate('/auth/login', { replace: true });
+    }
   }
 
   function handleOrderHistory() {
@@ -65,9 +75,11 @@ function Navbar() {
           {menuOpen && (
             <div className="navbar-dropdown">
               <div className="navbar-dropdown-email">{email}</div>
+
               <button className="navbar-dropdown-item" onClick={handleOrderHistory}>
                 <i className="fa-solid fa-receipt"></i> Order History
               </button>
+
               <button className="navbar-dropdown-item navbar-dropdown-signout" onClick={handleSignOut}>
                 <i className="fa-solid fa-right-from-bracket"></i> Sign out
               </button>
