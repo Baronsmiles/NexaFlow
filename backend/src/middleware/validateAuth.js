@@ -33,23 +33,14 @@ export async function validateAuth(req, res, next) {
       select: {
         id: true,
         name: true,
-        email: true,
-        tokenVersion: true
+        email: true
       }
     });
-
 
     if (!user) {
       return res.status(401).json({
         success: false,
         message: 'User not found.'
-      });
-    }
-
-    if (decoded.tokenVersion !== user.tokenVersion) {
-      return res.status(401).json({
-        success: false,
-        message: 'Session expired. Please log in again.'
       });
     }
 
