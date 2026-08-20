@@ -14,15 +14,16 @@ enum PaymentStatus {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
-  name             String
-  email            String            @unique
-  password         String?
-  googleId         String?           @unique
-  passwordResetOtp PasswordResetOtp?
-  createdAt        DateTime          @default(now())
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  email                 String   @unique
+  password              String?
+  googleId              String?  @unique
+  passwordResetOtp      PasswordResetOtp?
+  tokenVersion          Int      @default(0)
+  createdAt             DateTime @default(now())
 
-  orders OrderHistory[]
+  orders                OrderHistory[]
   refreshTokenSessions  RefreshTokenSession[]
 }
 

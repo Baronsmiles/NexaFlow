@@ -3,7 +3,10 @@ const USER_KEY = 'user';
 
 export function saveAuth(accessToken, user) {
   localStorage.setItem(TOKEN_KEY, accessToken);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+  if (user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
 }
 
 export function clearAuth() {
@@ -18,7 +21,15 @@ export function getAccessToken() {
 export function getUser() {
   const raw = localStorage.getItem(USER_KEY);
 
-  return raw ? JSON.parse(raw) : null;
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 export function isAuthenticated() {

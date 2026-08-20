@@ -7,6 +7,7 @@ import {
 
 export async function refreshToken(req, res) {
   try {
+    // 1. Get refresh token from HttpOnly cookie
     const oldRefreshToken = req.cookies.refreshToken;
 
     if (!oldRefreshToken) {
@@ -16,23 +17,26 @@ export async function refreshToken(req, res) {
       });
     }
 
-    // Hash the token from the cookie
-    const tokenHash =
-      hashRefreshToken(oldRefreshToken);
+    // 2. Hash the refresh token
+    const tokenHash = hashRefreshToken(oldRefreshToken);
 
-    // Find the refresh-token session
-    const session =
-      await prisma.refreshTokenSession.findUnique({
-        where: {
-          tokenHash
-        },
-        include: {
-          user: true
-        }
-      });
+    // 3. Find the existing refresh-token session
+    const session = await prisma.refreshTokenSession.findUnique({
+      where: {
+        tokenHash
+      },
+      include: {
+        user: true
+      }
+    });
 
     if (!session) {
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        path: '/'
+      });
 
       return res.status(401).json({
         success: false,
@@ -40,9 +44,14 @@ export async function refreshToken(req, res) {
       });
     }
 
-    // Check if token has already been revoked
+    // 4. Check whether the session was revoked
     if (session.revokedAt) {
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        path: '/'
+      });
 
       return res.status(401).json({
         success: false,
@@ -50,7 +59,7 @@ export async function refreshToken(req, res) {
       });
     }
 
-    // Check expiration
+    // 5. Check whether the refresh token has expired
     if (new Date() > session.expiresAt) {
       await prisma.refreshTokenSession.update({
         where: {
@@ -61,52 +70,46 @@ export async function refreshToken(req, res) {
         }
       });
 
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        path: '/'
+      });
 
       return res.status(401).json({
         success: false,
-        message: 'something with wrong.'
+        message: 'Refresh token has expired. Please log in again.'
       });
     }
 
-    // Generate new access token
-    const accessToken =
-      generateAccessToken(session.user);
+    // 6. Generate a new access token
+    const accessToken = generateAccessToken(session.user);
 
-    // Generate new refresh token
-    const newRefreshToken =
-      generateRefreshToken();
+    // 7. Generate a new refresh token
+    const newRefreshToken = generateRefreshToken();
 
-    // Hash new refresh token
+    // 8. Hash the new refresh token
     const newRefreshTokenHash =
       hashRefreshToken(newRefreshToken);
 
-    // New expiration
+    // 9. Give the refresh session another 7 days
     const expiresAt = new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000
     );
 
-    // Rotate refresh token
-    await prisma.$transaction([
-      prisma.refreshTokenSession.update({
-        where: {
-          id: session.id
-        },
-        data: {
-          revokedAt: new Date()
-        }
-      }),
+    // 10. UPDATE the existing row
+    await prisma.refreshTokenSession.update({
+      where: {
+        id: session.id
+      },
+      data: {
+        tokenHash: newRefreshTokenHash,
+        expiresAt
+      }
+    });
 
-      prisma.refreshTokenSession.create({
-        data: {
-          userId: session.userId,
-          tokenHash: newRefreshTokenHash,
-          expiresAt
-        }
-      })
-    ]);
-
-    // Send new refresh token
+    // 11. Replace the refresh-token cookie
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
@@ -115,13 +118,14 @@ export async function refreshToken(req, res) {
       path: '/'
     });
 
+    // 12. Return only the new access token
     return res.status(200).json({
       success: true,
       accessToken
     });
 
   } catch (error) {
-    console.error('something with wrong:', error);
+    console.error('Refresh token error:', error);
 
     return res.status(500).json({
       success: false,

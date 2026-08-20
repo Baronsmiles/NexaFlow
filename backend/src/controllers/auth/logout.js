@@ -5,9 +5,9 @@ export async function logout(req, res) {
   try {
     const refreshToken = req.cookies.refreshToken;
 
+    // Revoke the current refresh-token session
     if (refreshToken) {
-      const tokenHash =
-        hashRefreshToken(refreshToken);
+      const tokenHash = hashRefreshToken(refreshToken);
 
       await prisma.refreshTokenSession.updateMany({
         where: {
@@ -20,11 +20,12 @@ export async function logout(req, res) {
       });
     }
 
+    // Clear refresh-token cookie
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
       secure: true,
       sameSite: 'none',
+      path: '/'
     });
 
     return res.status(200).json({

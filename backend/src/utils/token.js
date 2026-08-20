@@ -4,7 +4,8 @@ export function generateAccessToken(user) {
   return jwt.sign(
     {
       userId: user.id,
-      email: user.email
+      email: user.email,
+      tokenVersion: user.tokenVersion
     },
     process.env.JWT_SECRET,
     {

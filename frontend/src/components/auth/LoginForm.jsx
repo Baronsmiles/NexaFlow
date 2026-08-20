@@ -101,7 +101,7 @@ function LoginForm({ onForgotPassword }) {
 
   try {
     const response = await api.post(
-      'auth/login',
+      '/auth/login',
       {
         email: formData.email,
         password: formData.password

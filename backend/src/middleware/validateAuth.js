@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import prisma from '../config/prisma.js';
+import prisma from '../../config/prisma.js';
 
 export async function validateAuth(req, res, next) {
   try {
@@ -21,11 +21,13 @@ export async function validateAuth(req, res, next) {
       });
     }
 
+    // Verify the access token
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
 
+    // Get the current user and token version
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.userId
@@ -33,7 +35,8 @@ export async function validateAuth(req, res, next) {
       select: {
         id: true,
         name: true,
-        email: true
+        email: true,
+        tokenVersion: true
       }
     });
 
@@ -44,7 +47,20 @@ export async function validateAuth(req, res, next) {
       });
     }
 
-    req.user = user;
+    // Check whether this access token has been invalidated
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json({
+        success: false,
+        message: 'Session expired. Please log in again.'
+      });
+    }
+
+    // Authentication successful
+    req.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
 
     next();
 

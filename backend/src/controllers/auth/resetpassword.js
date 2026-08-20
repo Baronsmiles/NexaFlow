@@ -116,7 +116,10 @@ export async function resetPassword(req, res) {
           id: user.id
         },
         data: {
-          password: passwordHash
+          password: passwordHash,
+          tokenVersion: {
+            increment: 1
+          }
         }
       }),
 
