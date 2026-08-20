@@ -20,7 +20,6 @@ model User {
   password         String?
   googleId         String?           @unique
   passwordResetOtp PasswordResetOtp?
-  tokenVersion     Int               @default(0)
   createdAt        DateTime          @default(now())
 
   orders OrderHistory[]
