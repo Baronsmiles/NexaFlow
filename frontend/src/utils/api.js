@@ -40,10 +40,10 @@ api.interceptors.response.use(
 
     // Do not refresh for authentication endpoints
     const isAuthRequest =
-      requestUrl.includes('/auth/login') ||
-      requestUrl.includes('/auth/register') ||
-      requestUrl.includes('/auth/google') ||
-      requestUrl.includes('/auth/refresh');
+      requestUrl.includes('auth/login') ||
+      requestUrl.includes('auth/register') ||
+      requestUrl.includes('auth/google') ||
+      requestUrl.includes('auth/refresh');
 
     if (
       error.response?.status === 401 &&
